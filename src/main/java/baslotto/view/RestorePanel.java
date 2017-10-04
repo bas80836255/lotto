@@ -14,6 +14,7 @@ public class RestorePanel extends JPanel {
     public RestorePanel() {
         this.setBounds(100, 100, 1280, 670);
         this.setLayout((LayoutManager)null);
+        setLayout(null);
         JLabel lblNewLabel = new JLabel("สำรองข้อมูล");
         lblNewLabel.setFont(new Font("Lucida Grande", 0, 22));
         lblNewLabel.setHorizontalAlignment(0);

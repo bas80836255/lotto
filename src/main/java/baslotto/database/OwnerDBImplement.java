@@ -5,7 +5,6 @@
 
 package baslotto.database;
 
-import baslotto.entity.OwnerInfo;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -13,6 +12,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import baslotto.entity.OwnerInfo;
 
 public class OwnerDBImplement implements OwnerDB {
 	private static final String JDBC_DRIVER = "org.h2.Driver";
@@ -70,7 +71,7 @@ public class OwnerDBImplement implements OwnerDB {
 		try {
 			String sql = "SELECT * FROM OwnerInfo";
 			ResultSet rs = this.stmt.executeQuery(sql);
-
+			int i = 0;
 			while (rs.next()) {
 				ownerInfo.setThreeTopPer(rs.getString("threeTopPer"));
 				ownerInfo.setThreeTodPer(rs.getString("threeTodPer"));
@@ -86,6 +87,9 @@ public class OwnerDBImplement implements OwnerDB {
 				ownerInfo.setRunBot(rs.getString("runBot"));
 			}
 
+			if(i==0) {
+				return null;
+			}
 			return ownerInfo;
 		} catch (SQLException var4) {
 			Logger.getLogger(OwnerDBImplement.class.getName()).log(Level.SEVERE, (String) null, var4);

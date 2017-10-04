@@ -33,6 +33,7 @@ public class LottoDBImplement implements LottoDB {
 			this.connection = DriverManager.getConnection("jdbc:h2:~/LottoDB1", "test", "test");
 			this.stmt = this.connection.createStatement();
 		} catch (Exception var2) {
+			System.err.println("cannot get Connection");
 			var2.printStackTrace();
 		}
 

@@ -43,7 +43,7 @@ public class SaleDBImplement {
 	public void createTable() {
 		try {
 			this.stmt.execute(
-					"CREATE TABLE SaleInfo (id bigint auto_increment NOT NULL PRIMARY KEY,  page VARCHAR(5),  customerName VARCHAR(20),  lottoNumber VARCHAR(50), threeTopPrice VARCHAR(10), threeTodPrice VARCHAR(10), twoTopPrice VARCHAR(10), twoBotPrice VARCHAR(10), runTopPrice VARCHAR(10), runBotPrice VARCHAR(10), date VARCHAR(20))");
+					"CREATE TABLE SaleInfo (id bigint auto_increment NOT NULL PRIMARY KEY,  page VARCHAR(5),  customerName VARCHAR(20),  lottoNumber VARCHAR(50), type VARCHAR(10), price VARCHAR(10), date VARCHAR(20))");
 			System.out.println("table create success");
 		} catch (SQLException var2) {
 			var2.printStackTrace();
@@ -53,17 +53,13 @@ public class SaleDBImplement {
 
 	public void addSale(SaleInfo saleInfo) {
 		try {
-			String sql = "INSERT INTO SaleInfo (page , customerName ,lottoNumber,threeTopPrice,threeTodPrice,twoTopPrice,twoBotPrice , runTopPrice ,runBotPrice,date) VALUES ('"
+			String sql = "INSERT INTO SaleInfo (page , customerName , lottoNumber, type , price , date) VALUES ('"
 					+ saleInfo.getPage() + "', '" + saleInfo.getCustomerName() + "', '" + saleInfo.getLottoNumber()
-					+ "', '" + saleInfo.getThreeTopPrice() + "', '" + saleInfo.getThreeTodPrice() + "', '"
-					+ saleInfo.getTwoTopPrice() + "', '" + saleInfo.getTwoBotPrice() + "', '"
-					+ saleInfo.getRunTopPrice() + "', '" + saleInfo.getRunBotPrice() + "', '" + saleInfo.getDate()
-					+ "')";
+					+ "', '" + saleInfo.getType() + "', '" + saleInfo.getPrice() + "', '" + saleInfo.getDate() + "')";
 			this.stmt.execute(sql);
 		} catch (SQLException var3) {
 			Logger.getLogger(SaleDBImplement.class.getName()).log(Level.SEVERE, (String) null, var3);
 		}
-
 	}
 
 	public void removeSale(String keyword) {
@@ -88,12 +84,8 @@ public class SaleDBImplement {
 				saleInfo.setPage(rs.getString("page"));
 				saleInfo.setCustomerName(rs.getString("customerName"));
 				saleInfo.setLottoNumber(rs.getString("lottoNumber"));
-				saleInfo.setThreeTopPrice(rs.getString("threeTopPrice"));
-				saleInfo.setThreeTodPrice(rs.getString("threeTodPrice"));
-				saleInfo.setTwoTopPrice(rs.getString("twoTopPrice"));
-				saleInfo.setTwoBotPrice(rs.getString("twoBotPrice"));
-				saleInfo.setRunTopPrice(rs.getString("runTopPrice"));
-				saleInfo.setRunBotPrice(rs.getString("runBotPrice"));
+				saleInfo.setType(rs.getString("type"));
+				saleInfo.setPrice(rs.getString("price"));
 				saleInfo.setDate(rs.getString("date"));
 				saleInfoList.add(saleInfo);
 			}

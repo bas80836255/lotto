@@ -10,102 +10,78 @@ public class SaleInfo {
     private String page;
     private String customerName;
     private String lottoNumber;
-    private String threeTopPrice;
-    private String threeTodPrice;
-    private String twoTopPrice;
-    private String twoBotPrice;
-    private String runTopPrice;
-    private String runBotPrice;
+    private String type;
+    private String price;
     private String date;
+    
+	public SaleInfo() {
 
-    public SaleInfo() {
-    }
+	}
+	
+	public SaleInfo(String page, String customerName, String lottoNumber, String type, String price,
+			String date) {
+		this.page = page;
+		this.customerName = customerName;
+		this.lottoNumber = lottoNumber;
+		this.type = type;
+		this.price = price;
+		this.date = date;
+	}
 
-    public String getId() {
-        return this.id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public String getPage() {
-        return this.page;
-    }
+	public String getPage() {
+		return page;
+	}
 
-    public void setPage(String page) {
-        this.page = page;
-    }
+	public void setPage(String page) {
+		this.page = page;
+	}
 
-    public String getCustomerName() {
-        return this.customerName;
-    }
+	public String getCustomerName() {
+		return customerName;
+	}
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
 
-    public String getLottoNumber() {
-        return this.lottoNumber;
-    }
+	public String getLottoNumber() {
+		return lottoNumber;
+	}
 
-    public void setLottoNumber(String lottoNumber) {
-        this.lottoNumber = lottoNumber;
-    }
+	public void setLottoNumber(String lottoNumber) {
+		this.lottoNumber = lottoNumber;
+	}
 
-    public String getThreeTopPrice() {
-        return this.threeTopPrice;
-    }
+	public String getType() {
+		return type;
+	}
 
-    public void setThreeTopPrice(String threeTopPrice) {
-        this.threeTopPrice = threeTopPrice;
-    }
+	public void setType(String type) {
+		this.type = type;
+	}
 
-    public String getThreeTodPrice() {
-        return this.threeTodPrice;
-    }
+	public String getPrice() {
+		return price;
+	}
 
-    public void setThreeTodPrice(String threeTodPrice) {
-        this.threeTodPrice = threeTodPrice;
-    }
+	public void setPrice(String price) {
+		this.price = price;
+	}
 
-    public String getTwoTopPrice() {
-        return this.twoTopPrice;
-    }
+	public String getDate() {
+		return date;
+	}
 
-    public void setTwoTopPrice(String twoTopPrice) {
-        this.twoTopPrice = twoTopPrice;
-    }
-
-    public String getTwoBotPrice() {
-        return this.twoBotPrice;
-    }
-
-    public void setTwoBotPrice(String twoBotPrice) {
-        this.twoBotPrice = twoBotPrice;
-    }
-
-    public String getRunTopPrice() {
-        return this.runTopPrice;
-    }
-
-    public void setRunTopPrice(String runTopPrice) {
-        this.runTopPrice = runTopPrice;
-    }
-
-    public String getRunBotPrice() {
-        return this.runBotPrice;
-    }
-
-    public void setRunBotPrice(String runBotPrice) {
-        this.runBotPrice = runBotPrice;
-    }
-
-    public String getDate() {
-        return this.date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
+	public void setDate(String date) {
+		this.date = date;
+	}
+	
 }
