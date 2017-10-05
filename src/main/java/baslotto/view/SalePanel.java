@@ -12,9 +12,11 @@ import baslotto.entity.SaleInfo;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.function.BiConsumer;
 import java.util.regex.Pattern;
@@ -163,92 +165,215 @@ public class SalePanel extends JPanel {
 
 	}
 
-	public void threeNumber(String number, String price) {
-		// notsame
-		if (!(Pattern.matches("(?:\\d{1})(\\d{1})\\1", number) || Pattern.matches("(\\d{1})\\1(?:\\d{1})", number)
-				|| Pattern.matches("(\\d{1})(?:\\d{1})\\1", number))) {
-			if (Pattern.matches("\\d{3}\\+\\d{3}", price)) {
-
-			}
-			if (Pattern.matches("\\d{3}\\-", price)) {
-
-			}
-			if (Pattern.matches("\\+\\d{3}", price) | Pattern.matches("\\0+\\d{3}", price)) {
-
-			}
-
+	public void threeNumber(String number, String price, String customerName, String page) {
+		SaleInfo saleInfo = new SaleInfo();
+		saleInfo.setCustomerName(customerName);
+		saleInfo.setPage(page);
+		
+		//threeTop and threeTod
+		if (Pattern.matches("\\d{3}\\+\\d{3}", price)) {
+			String[] splitPrice = price.split("+");
+			saleInfo.setLottoNumber(number);
+			saleInfo.setType("1");
+			saleInfo.setPrice(splitPrice[0]);
+			saleDBImplement.addSale(saleInfo);
+			saleInfo.setType("2");
+			saleInfo.setPrice(splitPrice[1]);
+			saleDBImplement.addSale(saleInfo);
 		}
-		// same two
-		if ((Pattern.matches("(?:\\d{1})(\\d{1})\\1", number) || Pattern.matches("(\\d{1})\\1(?:\\d{1})", number)
-				|| Pattern.matches("(\\d{1})(?:\\d{1})\\1", number))
-				&& !(Pattern.matches("(?:\\d{1})(\\d{1})\\1", number)
-						&& Pattern.matches("(\\d{1})\\1(?:\\d{1})", number)
-						&& Pattern.matches("(\\d{1})(?:\\d{1})\\1", number))) {
-			if (Pattern.matches("\\d{3}\\+\\d{3}", price)) {
-
+		
+		//threeTopx6 || threeTopx3
+		if (Pattern.matches("\\d{3}\\-", price)) {
+			// notsame
+			if (!(Pattern.matches("(?:\\d{1})(\\d{1})\\1", number) || Pattern.matches("(\\d{1})\\1(?:\\d{1})", number)
+					|| Pattern.matches("(\\d{1})(?:\\d{1})\\1", number))) {
+				saleInfo.setPrice(price);
+				saleInfo.setType("1");
+				Set<String> todLotto = seperateTod(number);
+				Iterator<String> iterator = todLotto.iterator();
+				while(iterator.hasNext()) {
+					saleInfo.setLottoNumber(iterator.next());
+					saleDBImplement.addSale(saleInfo);
+				}
 			}
-			if (Pattern.matches("\\d{3}\\-", price)) {
-
+			// same two
+			if ((Pattern.matches("(?:\\d{1})(\\d{1})\\1", number) || Pattern.matches("(\\d{1})\\1(?:\\d{1})", number)
+					|| Pattern.matches("(\\d{1})(?:\\d{1})\\1", number))
+					&& !(Pattern.matches("(?:\\d{1})(\\d{1})\\1", number)
+							&& Pattern.matches("(\\d{1})\\1(?:\\d{1})", number)
+							&& Pattern.matches("(\\d{1})(?:\\d{1})\\1", number))) {
+				saleInfo.setPrice(price);
+				saleInfo.setType("1");
+				Set<String> todLotto = seperateTod(number);
+				Iterator<String> iterator = todLotto.iterator();
+				while(iterator.hasNext()) {
+					saleInfo.setLottoNumber(iterator.next());
+					saleDBImplement.addSale(saleInfo);
+				}
 			}
-			if (Pattern.matches("\\+\\d{3}", price) | Pattern.matches("\\0+\\d{3}", price)) {
-
+			// same three
+			if (Pattern.matches("(?:\\d{1})(\\d{1})\\1", number) && Pattern.matches("(\\d{1})\\1(?:\\d{1})", number)
+					&& Pattern.matches("(\\d{1})(?:\\d{1})\\1", number)) {
+				saleInfo.setType("1");
+				saleInfo.setPrice(price);
+				saleInfo.setLottoNumber(number);
+				saleDBImplement.addSale(saleInfo);
 			}
-
 		}
-		// same three
-		if (Pattern.matches("(?:\\d{1})(\\d{1})\\1", number) && Pattern.matches("(\\d{1})\\1(?:\\d{1})", number)
-				&& Pattern.matches("(\\d{1})(?:\\d{1})\\1", number)) {
-			if (Pattern.matches("\\d{3}\\+\\d{3}", price)) {
-
-			}
-			if (Pattern.matches("\\d{3}\\-", price)) {
-
-			}
-			if (Pattern.matches("\\+\\d{3}", price) | Pattern.matches("\\0+\\d{3}", price)) {
-
-			}
+		
+		// threeTop
+		if (Pattern.matches("\\d{1,6}", price)) {
+			saleInfo.setType("1");
+			saleInfo.setPrice(price);
+			saleInfo.setLottoNumber(number);
+			saleDBImplement.addSale(saleInfo);
+		}
+		
+		// threeTod
+		if (Pattern.matches("\\+\\d{1,6}", price) || Pattern.matches("0\\+\\d{1,6}", price)) {
+			saleInfo.setType("2");
+			saleInfo.setPrice(price);
+			saleInfo.setLottoNumber(number);
+			saleDBImplement.addSale(saleInfo);
 		}
 	}
 
-	public void twoNumber(String number, String price) {
+	public void twoNumber(String number, String price, String customerName, String page) {
+		SaleInfo saleInfo = new SaleInfo();
+		saleInfo.setCustomerName(customerName);
+		saleInfo.setPage(page);
+
 		// 50+50 top bot
 		if (Pattern.matches("\\d{3}+\\d{3}", price)) {
-
+			String[] splitPrice = price.split("+");
+			saleInfo.setLottoNumber(number);
+			saleInfo.setType("3");
+			saleInfo.setPrice(splitPrice[0]);
+			saleDBImplement.addSale(saleInfo);
+			saleInfo.setType("4");
+			saleInfo.setPrice(splitPrice[1]);
+			saleDBImplement.addSale(saleInfo);
 		}
+
 		// 50+50- top bot switch
 		if (Pattern.matches("\\d{3}+\\d{3}\\-", price)) {
-
+			String[] splitPrice = price.split("+");
+			String firstNumber = number.substring(0, 1);
+			String secondNumber = number.substring(1, 2);
+			saleInfo.setType("3");
+			saleInfo.setPrice(splitPrice[0]);
+			saleInfo.setLottoNumber(firstNumber + secondNumber);
+			saleDBImplement.addSale(saleInfo);
+			saleInfo.setLottoNumber(secondNumber + firstNumber);
+			saleDBImplement.addSale(saleInfo);
+			saleInfo.setType("4");
+			saleInfo.setPrice(splitPrice[1]);
+			saleInfo.setLottoNumber(firstNumber + secondNumber);
+			saleDBImplement.addSale(saleInfo);
+			saleInfo.setLottoNumber(secondNumber + firstNumber);
+			saleDBImplement.addSale(saleInfo);
 		}
 		// 50- top switch
 		if (Pattern.matches("\\d{3}\\-", price)) {
-
+			String firstNumber = number.substring(0, 1);
+			String secondNumber = number.substring(1, 2);
+			saleInfo.setType("3");
+			saleInfo.setPrice(price);
+			saleInfo.setLottoNumber(firstNumber + secondNumber);
+			saleDBImplement.addSale(saleInfo);
+			saleInfo.setLottoNumber(secondNumber + firstNumber);
+			saleDBImplement.addSale(saleInfo);
 		}
 		// 50 top
 		if (Pattern.matches("\\d{3}", price)) {
-
+			saleInfo.setType("3");
+			saleInfo.setPrice(price);
+			saleInfo.setLottoNumber(number);
+			saleDBImplement.addSale(saleInfo);
 		}
 		// +50- || 0+50- bot switch
 		if (Pattern.matches("\\+\\d{1,6}\\-", price) || Pattern.matches("0\\+\\d{1,6}\\-", price)) {
-
+			String firstNumber = number.substring(0, 1);
+			String secondNumber = number.substring(1, 2);
+			saleInfo.setType("4");
+			saleInfo.setPrice(price);
+			saleInfo.setLottoNumber(firstNumber + secondNumber);
+			saleDBImplement.addSale(saleInfo);
+			saleInfo.setLottoNumber(secondNumber + firstNumber);
+			saleDBImplement.addSale(saleInfo);
 		}
 		// +50 || 0+50 bot
 		if (Pattern.matches("\\+\\d{1,6}", price) || Pattern.matches("0\\+\\d{1,6}", price)) {
-			System.out.println("true");
+			saleInfo.setType("3");
+			saleInfo.setPrice(price);
+			saleInfo.setLottoNumber(number);
+			saleDBImplement.addSale(saleInfo);
 		}
 	}
 
-	public void oneNumber(String number, String price) {
+	public void oneNumber(String number, String price, String customerName, String page) {
+		SaleInfo saleInfo = new SaleInfo();
+		saleInfo.setCustomerName(customerName);
+		saleInfo.setPage(page);
+
 		// 50+50 runtop runbot
 		if (Pattern.matches("\\d{1,6}\\+\\d{1,6}", price)) {
-
+			saleInfo.setLottoNumber(number);
+			String[] splitPrice = price.split("+");
+			saleInfo.setType("5");
+			saleInfo.setPrice(splitPrice[0]);
+			saleDBImplement.addSale(saleInfo);
+			saleInfo.setPrice(splitPrice[1]);
+			saleInfo.setType("6");
+			saleDBImplement.addSale(saleInfo);
 		}
+
+		// 50 runtop
+		if (Pattern.matches("\\d{1,6}", price)) {
+			saleInfo.setLottoNumber(number);
+			saleInfo.setType("5");
+			saleInfo.setPrice(price);
+			saleDBImplement.addSale(saleInfo);
+		}
+
+		// +50 || 0+50 runbot
+		if (Pattern.matches("\\+\\d{1,6}", price) || Pattern.matches("0\\+\\d{1,6}", price)) {
+			saleInfo.setLottoNumber(number);
+			saleInfo.setType("6");
+			saleInfo.setPrice(price);
+			saleDBImplement.addSale(saleInfo);
+		}
+
 		// 50- topx19
-		if (Pattern.matches("\\d{3}\\-", price)) {
-
+		if (Pattern.matches("\\d{1,6}\\-", price)) {
+			saleInfo.setType("3");
+			saleInfo.setPrice(price);
+			for (int i = 0; i < 10; i++) {
+				saleInfo.setLottoNumber(number + String.valueOf(i));
+				saleDBImplement.addSale(saleInfo);
+			}
+			for (int y = 0; y < 10; y++) {
+				if (number.equals(String.valueOf(y))) {
+					saleInfo.setLottoNumber(String.valueOf(y) + number);
+					saleDBImplement.addSale(saleInfo);
+				}
+			}
 		}
+
 		// +50- || 0+50- botx19
 		if (Pattern.matches("\\+\\d{1,6}\\-", price) || Pattern.matches("0\\+\\d{1,6}\\-", price)) {
-
+			saleInfo.setType("4");
+			saleInfo.setPrice(price);
+			for (int i = 0; i < 10; i++) {
+				saleInfo.setLottoNumber(number + String.valueOf(i));
+				saleDBImplement.addSale(saleInfo);
+			}
+			for (int y = 0; y < 10; y++) {
+				if (number.equals(String.valueOf(y))) {
+					saleInfo.setLottoNumber(String.valueOf(y) + number);
+					saleDBImplement.addSale(saleInfo);
+				}
+			}
 		}
 	}
 
@@ -256,11 +381,12 @@ public class SalePanel extends JPanel {
 		SaleInfo saleInfo = new SaleInfo();
 		saleInfo.setCustomerName(customerName);
 		saleInfo.setPage(page);
+
 		// -- two double
 		if (Pattern.matches("\\-\\-", number) && Pattern.matches("\\d{1,6}", price)) {
 			saleInfo.setType("3");
 			for (int i = 0; i < 10; i++) {
-				saleInfo.setLottoNumber(String.valueOf(i)+String.valueOf(i));
+				saleInfo.setLottoNumber(String.valueOf(i) + String.valueOf(i));
 				saleDBImplement.addSale(saleInfo);
 			}
 		}
@@ -270,10 +396,10 @@ public class SalePanel extends JPanel {
 			String[] splitNumber = number.split("-");
 			int firstNumber = Integer.parseInt(splitNumber[0]);
 			int secondNumber = Integer.parseInt(splitNumber[1]);
-			if(secondNumber > firstNumber) {
-				int duration = secondNumber-firstNumber;
+			if (secondNumber > firstNumber) {
+				int duration = secondNumber - firstNumber;
 				for (int i = 0; i < duration; i++) {
-					saleInfo.setLottoNumber(String.valueOf(firstNumber+i));
+					saleInfo.setLottoNumber(String.valueOf(firstNumber + i));
 					saleDBImplement.addSale(saleInfo);
 				}
 			}
@@ -282,7 +408,7 @@ public class SalePanel extends JPanel {
 		if (Pattern.matches("\\d{1}\\*", number) && Pattern.matches("\\d{1,6}", price)) {
 			saleInfo.setType("3");
 			for (int i = 0; i < 10; i++) {
-				saleInfo.setLottoNumber(number+String.valueOf(i));
+				saleInfo.setLottoNumber(number + String.valueOf(i));
 				saleDBImplement.addSale(saleInfo);
 			}
 		}
@@ -290,7 +416,7 @@ public class SalePanel extends JPanel {
 		if (Pattern.matches("\\*\\d{1}", number) && Pattern.matches("\\d{1,6}", price)) {
 			saleInfo.setType("3");
 			for (int i = 0; i < 10; i++) {
-				saleInfo.setLottoNumber(String.valueOf(i)+number);
+				saleInfo.setLottoNumber(String.valueOf(i) + number);
 				saleDBImplement.addSale(saleInfo);
 			}
 		}
@@ -299,13 +425,27 @@ public class SalePanel extends JPanel {
 				&& Pattern.matches("\\d{1,6}", price)) {
 			saleInfo.setType("3");
 			for (int i = 0; i < 10; i++) {
-				saleInfo.setLottoNumber(number+String.valueOf(i));
+				saleInfo.setLottoNumber(number + String.valueOf(i));
 				saleDBImplement.addSale(saleInfo);
 			}
 			for (int i = 0; i < 10; i++) {
-				saleInfo.setLottoNumber(String.valueOf(i)+number);
+				saleInfo.setLottoNumber(String.valueOf(i) + number);
 				saleDBImplement.addSale(saleInfo);
 			}
 		}
+	}
+	
+	private Set<String> seperateTod(String threeLotto) {
+		Set<String> todLotto = new HashSet();
+		String firstNumber = threeLotto.substring(0, 1);
+		String secondNumber = threeLotto.substring(1, 2);
+		String thirdNumber = threeLotto.substring(2);
+		todLotto.add(firstNumber + secondNumber + thirdNumber);
+		todLotto.add(firstNumber + thirdNumber + secondNumber);
+		todLotto.add(secondNumber + firstNumber + thirdNumber);
+		todLotto.add(secondNumber + thirdNumber + firstNumber);
+		todLotto.add(thirdNumber + firstNumber + secondNumber);
+		todLotto.add(thirdNumber + secondNumber + firstNumber);
+		return todLotto;
 	}
 }

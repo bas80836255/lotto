@@ -1,14 +1,23 @@
 package baslotto;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class Application {
 
 	public static void main(String[] args) {
-		String number = "311";
+		String number = "212";
 		String price = "+100";
-		// threeNumber(number, price);
-		twoNumber("50", "+500000");
+//		 threeNumber(number, price);
+//		twoNumber("50", "+500000");
+//		String test = "23";
+		Set<String> todLotto = seperateTod(number);
+		Iterator<String> iterator = todLotto.iterator();
+		while(iterator.hasNext()) {
+			System.out.println(iterator.next());
+		}
 	}
 
 	public static void threeNumber(String number, String price) {
@@ -85,4 +94,19 @@ public class Application {
 		}
 
 	}
+	
+	private static Set<String> seperateTod(String threeLotto) {
+		Set<String> todLotto = new HashSet();
+		String firstNumber = threeLotto.substring(0, 1);
+		String secondNumber = threeLotto.substring(1, 2);
+		String thirdNumber = threeLotto.substring(2);
+		todLotto.add(firstNumber + secondNumber + thirdNumber);
+		todLotto.add(firstNumber + thirdNumber + secondNumber);
+		todLotto.add(secondNumber + firstNumber + thirdNumber);
+		todLotto.add(secondNumber + thirdNumber + firstNumber);
+		todLotto.add(thirdNumber + firstNumber + secondNumber);
+		todLotto.add(thirdNumber + secondNumber + firstNumber);
+		return todLotto;
+	}
+	
 }
