@@ -7,7 +7,9 @@ package baslotto.view;
 
 import baslotto.database.CustomerDBImplement;
 import baslotto.database.SaleDBImplement;
+import baslotto.entity.CustomerInfo;
 import baslotto.entity.SaleInfo;
+import baslotto.view.popup.NullPopup;
 
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
@@ -31,15 +33,24 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import org.h2.util.StringUtils;
+
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class SalePanel extends JPanel {
 	private JTable table;
-	private JTextField textField_1;
+	private JTextField numberTextField;
 	private JButton button_4;
-	private JTextField textField;
+	private JTextField priceTextField;
 	private JComboBox comboBoxCustomerName;
 	private JComboBox comboBoxPage;
 	private SaleDBImplement saleDBImplement = new SaleDBImplement();
 	private CustomerDBImplement customerDBImplement = new CustomerDBImplement();
+	// private String customerName;
+	// private String page;
 
 	public SalePanel() {
 		setBounds(100, 100, 1280, 670);
@@ -60,14 +71,69 @@ public class SalePanel extends JPanel {
 		JLabel label_2 = new JLabel("ราคา");
 		label_2.setBounds(378, 39, 109, 61);
 		add(label_2);
-		textField_1 = new JTextField();
-		textField_1.setBounds(152, 34, 178, 70);
-		add(textField_1);
-		textField_1.setColumns(10);
-		textField = new JTextField();
-		textField.setColumns(10);
-		textField.setBounds(506, 34, 178, 70);
-		add(textField);
+		numberTextField = new JTextField();
+		numberTextField.setBounds(152, 34, 178, 70);
+		add(numberTextField);
+		numberTextField.setColumns(10);
+		priceTextField = new JTextField();
+		priceTextField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (StringUtils.isNullOrEmpty(numberTextField.getText())
+							&& StringUtils.isNullOrEmpty(priceTextField.getText())) {
+						NullPopup nullPopup = new NullPopup("ใส่เลขหรือราคาไม่ถูกต้อง");
+						nullPopup.setModal(true);
+						nullPopup.setVisible(true);
+					} else {
+						// 3
+						if (Pattern.matches("\\d{3}", numberTextField.getText())) {
+							threeNumber(numberTextField.getText(), priceTextField.getText(),
+									comboBoxCustomerName.getSelectedItem().toString(),
+									comboBoxPage.getSelectedItem().toString());
+							NullPopup nullPopup = new NullPopup("เรียบร้อย");
+							nullPopup.setModal(true);
+							nullPopup.setVisible(true);
+						}
+						// 2
+						if (Pattern.matches("\\d{2}", numberTextField.getText())) {
+							twoNumber(numberTextField.getText(), priceTextField.getText(),
+									comboBoxCustomerName.getSelectedItem().toString(),
+									comboBoxPage.getSelectedItem().toString());
+							NullPopup nullPopup = new NullPopup("เรียบร้อย");
+							nullPopup.setModal(true);
+							nullPopup.setVisible(true);
+						}
+						// 1
+						if (Pattern.matches("\\d{1}", numberTextField.getText())) {
+							oneNumber(numberTextField.getText(), priceTextField.getText(),
+									comboBoxCustomerName.getSelectedItem().toString(),
+									comboBoxPage.getSelectedItem().toString());
+							NullPopup nullPopup = new NullPopup("เรียบร้อย");
+							nullPopup.setModal(true);
+							nullPopup.setVisible(true);
+						}
+						// special
+						if (Pattern.matches("\\d{2}\\-\\d{2}", numberTextField.getText())
+								|| Pattern.matches("\\-\\-", numberTextField.getText())
+								|| Pattern.matches("\\d{1}\\*", numberTextField.getText())
+								|| Pattern.matches("\\*\\d{1}", numberTextField.getText())
+								|| (Pattern.matches("\\*\\d{1}\\*", numberTextField.getText())
+										|| Pattern.matches("\\d{1}\\*\\*", numberTextField.getText()))) {
+							specialNumber(numberTextField.getText(), priceTextField.getText(),
+									comboBoxCustomerName.getSelectedItem().toString(),
+									comboBoxPage.getSelectedItem().toString());
+							NullPopup nullPopup = new NullPopup("เรียบร้อย");
+							nullPopup.setModal(true);
+							nullPopup.setVisible(true);
+						}
+					}
+				}
+			}
+		});
+		priceTextField.setColumns(10);
+		priceTextField.setBounds(506, 34, 178, 70);
+		add(priceTextField);
 		button_4 = new JButton("จบการทำรายการ");
 		button_4.setBounds(1113, 607, 135, 44);
 		add(button_4);
@@ -95,7 +161,7 @@ public class SalePanel extends JPanel {
 		comboBoxCustomerName = new JComboBox(modelCustomer);
 		comboBoxCustomerName.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				List<String> pageList = saleDBImplement
+				Set<String> pageList = saleDBImplement
 						.getCustomerPage(comboBoxCustomerName.getSelectedItem().toString());
 				comboBoxPage.removeAllItems();
 				if (!pageList.isEmpty() && pageList != null) {
@@ -119,7 +185,7 @@ public class SalePanel extends JPanel {
 		JLabel label = new JLabel("แผ่นที่");
 		label.setBounds(986, 102, 61, 16);
 		add(label);
-		List<String> pageList = saleDBImplement.getCustomerPage(comboBoxCustomerName.getSelectedItem().toString());
+		Set<String> pageList = saleDBImplement.getCustomerPage(comboBoxCustomerName.getSelectedItem().toString());
 		Vector<String> pageItems = new Vector();
 		if (!pageList.isEmpty() && pageList != null) {
 			Iterator var16 = pageList.iterator();
@@ -136,31 +202,29 @@ public class SalePanel extends JPanel {
 		comboBoxPage = new JComboBox(modelPage);
 		comboBoxPage.setBounds(1059, 98, 115, 27);
 		add(comboBoxPage);
+		
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setBounds(990, 158, 258, 437);
 		add(scrollPane_1);
+		
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		model.addColumn("ลำดับ");
 		model.addColumn("เลข");
-		model.addColumn("3เต็ง");
-		model.addColumn("3โต๊ด");
-		model.addColumn("2บน");
-		model.addColumn("2ล่าง");
-		model.addColumn("1วิ่งบน");
-		model.addColumn("1วิ่งล่าง");
+		model.addColumn("ประเภท");
+		model.addColumn("ราคา");
 		model.addColumn("เวลา");
 
-		for (int i = 0; i <= 20; ++i) {
+		List<SaleInfo> saleInfoList = saleDBImplement.getSaleListbyPage(
+				comboBoxCustomerName.getSelectedItem().toString(), comboBoxPage.getSelectedItem().toString());
+		int i = 0;
+		for (SaleInfo saleInfo : saleInfoList) {
 			model.addRow(new Object[0]);
 			model.setValueAt(i + 1, i, 0);
-			model.setValueAt("Data Col 1", i, 1);
-			model.setValueAt("Data Col 2", i, 2);
-			model.setValueAt("Data Col 3", i, 3);
-			model.setValueAt("Data Col 4", i, 4);
-			model.setValueAt("Data Col 5", i, 5);
-			model.setValueAt("Data Col 6", i, 6);
-			model.setValueAt("Data Col 6", i, 7);
-			model.setValueAt("Data Col 6", i, 8);
+			model.setValueAt(saleInfo.getLottoNumber(), i, 1);
+			model.setValueAt(transNumberToWordLotto(saleInfo.getType()), i, 2);
+			model.setValueAt(saleInfo.getPrice(), i, 3);
+			model.setValueAt(saleInfo.getDate(), i, 4);
+			i++;
 		}
 
 	}
@@ -169,10 +233,12 @@ public class SalePanel extends JPanel {
 		SaleInfo saleInfo = new SaleInfo();
 		saleInfo.setCustomerName(customerName);
 		saleInfo.setPage(page);
-		
-		//threeTop and threeTod
-		if (Pattern.matches("\\d{3}\\+\\d{3}", price)) {
-			String[] splitPrice = price.split("+");
+		saleInfo.setDate(setTime());
+
+		// threeTop and threeTod
+		if (Pattern.matches("\\d{1,6}\\+\\d{1,6}", price)) {
+			
+			String[] splitPrice = price.split("\\+");
 			saleInfo.setLottoNumber(number);
 			saleInfo.setType("1");
 			saleInfo.setPrice(splitPrice[0]);
@@ -181,9 +247,9 @@ public class SalePanel extends JPanel {
 			saleInfo.setPrice(splitPrice[1]);
 			saleDBImplement.addSale(saleInfo);
 		}
-		
-		//threeTopx6 || threeTopx3
-		if (Pattern.matches("\\d{3}\\-", price)) {
+
+		// threeTopx6 || threeTopx3
+		if (Pattern.matches("\\d{1,6}\\-", price)) {
 			// notsame
 			if (!(Pattern.matches("(?:\\d{1})(\\d{1})\\1", number) || Pattern.matches("(\\d{1})\\1(?:\\d{1})", number)
 					|| Pattern.matches("(\\d{1})(?:\\d{1})\\1", number))) {
@@ -191,7 +257,7 @@ public class SalePanel extends JPanel {
 				saleInfo.setType("1");
 				Set<String> todLotto = seperateTod(number);
 				Iterator<String> iterator = todLotto.iterator();
-				while(iterator.hasNext()) {
+				while (iterator.hasNext()) {
 					saleInfo.setLottoNumber(iterator.next());
 					saleDBImplement.addSale(saleInfo);
 				}
@@ -206,7 +272,7 @@ public class SalePanel extends JPanel {
 				saleInfo.setType("1");
 				Set<String> todLotto = seperateTod(number);
 				Iterator<String> iterator = todLotto.iterator();
-				while(iterator.hasNext()) {
+				while (iterator.hasNext()) {
 					saleInfo.setLottoNumber(iterator.next());
 					saleDBImplement.addSale(saleInfo);
 				}
@@ -220,7 +286,7 @@ public class SalePanel extends JPanel {
 				saleDBImplement.addSale(saleInfo);
 			}
 		}
-		
+
 		// threeTop
 		if (Pattern.matches("\\d{1,6}", price)) {
 			saleInfo.setType("1");
@@ -228,7 +294,7 @@ public class SalePanel extends JPanel {
 			saleInfo.setLottoNumber(number);
 			saleDBImplement.addSale(saleInfo);
 		}
-		
+
 		// threeTod
 		if (Pattern.matches("\\+\\d{1,6}", price) || Pattern.matches("0\\+\\d{1,6}", price)) {
 			saleInfo.setType("2");
@@ -242,10 +308,11 @@ public class SalePanel extends JPanel {
 		SaleInfo saleInfo = new SaleInfo();
 		saleInfo.setCustomerName(customerName);
 		saleInfo.setPage(page);
+		saleInfo.setDate(setTime());
 
 		// 50+50 top bot
-		if (Pattern.matches("\\d{3}+\\d{3}", price)) {
-			String[] splitPrice = price.split("+");
+		if (Pattern.matches("\\d{1,6}\\+\\d{1,6}", price)) {
+			String[] splitPrice = price.split("\\+");
 			saleInfo.setLottoNumber(number);
 			saleInfo.setType("3");
 			saleInfo.setPrice(splitPrice[0]);
@@ -256,8 +323,8 @@ public class SalePanel extends JPanel {
 		}
 
 		// 50+50- top bot switch
-		if (Pattern.matches("\\d{3}+\\d{3}\\-", price)) {
-			String[] splitPrice = price.split("+");
+		if (Pattern.matches("\\d{1,6}\\+\\d{1,6}\\-", price)) {
+			String[] splitPrice = price.split("\\+");
 			String firstNumber = number.substring(0, 1);
 			String secondNumber = number.substring(1, 2);
 			saleInfo.setType("3");
@@ -274,7 +341,7 @@ public class SalePanel extends JPanel {
 			saleDBImplement.addSale(saleInfo);
 		}
 		// 50- top switch
-		if (Pattern.matches("\\d{3}\\-", price)) {
+		if (Pattern.matches("\\d{1,6}\\-", price)) {
 			String firstNumber = number.substring(0, 1);
 			String secondNumber = number.substring(1, 2);
 			saleInfo.setType("3");
@@ -285,7 +352,7 @@ public class SalePanel extends JPanel {
 			saleDBImplement.addSale(saleInfo);
 		}
 		// 50 top
-		if (Pattern.matches("\\d{3}", price)) {
+		if (Pattern.matches("\\d{1,6}", price)) {
 			saleInfo.setType("3");
 			saleInfo.setPrice(price);
 			saleInfo.setLottoNumber(number);
@@ -315,11 +382,12 @@ public class SalePanel extends JPanel {
 		SaleInfo saleInfo = new SaleInfo();
 		saleInfo.setCustomerName(customerName);
 		saleInfo.setPage(page);
+		saleInfo.setDate(setTime());
 
 		// 50+50 runtop runbot
 		if (Pattern.matches("\\d{1,6}\\+\\d{1,6}", price)) {
 			saleInfo.setLottoNumber(number);
-			String[] splitPrice = price.split("+");
+			String[] splitPrice = price.split("\\+");
 			saleInfo.setType("5");
 			saleInfo.setPrice(splitPrice[0]);
 			saleDBImplement.addSale(saleInfo);
@@ -381,10 +449,12 @@ public class SalePanel extends JPanel {
 		SaleInfo saleInfo = new SaleInfo();
 		saleInfo.setCustomerName(customerName);
 		saleInfo.setPage(page);
+		saleInfo.setDate(setTime());
 
 		// -- two double
 		if (Pattern.matches("\\-\\-", number) && Pattern.matches("\\d{1,6}", price)) {
 			saleInfo.setType("3");
+			saleInfo.setPrice(price);
 			for (int i = 0; i < 10; i++) {
 				saleInfo.setLottoNumber(String.valueOf(i) + String.valueOf(i));
 				saleDBImplement.addSale(saleInfo);
@@ -393,7 +463,8 @@ public class SalePanel extends JPanel {
 		// 10-15 number to number
 		if (Pattern.matches("\\d{2}\\-\\d{2}", number) && Pattern.matches("\\d{1,6}", price)) {
 			saleInfo.setType("3");
-			String[] splitNumber = number.split("-");
+			saleInfo.setPrice(price);
+			String[] splitNumber = number.split("\\-");
 			int firstNumber = Integer.parseInt(splitNumber[0]);
 			int secondNumber = Integer.parseInt(splitNumber[1]);
 			if (secondNumber > firstNumber) {
@@ -407,6 +478,7 @@ public class SalePanel extends JPanel {
 		// 5* 50,51,52,53,54,55,56,57,58,59
 		if (Pattern.matches("\\d{1}\\*", number) && Pattern.matches("\\d{1,6}", price)) {
 			saleInfo.setType("3");
+			saleInfo.setPrice(price);
 			for (int i = 0; i < 10; i++) {
 				saleInfo.setLottoNumber(number + String.valueOf(i));
 				saleDBImplement.addSale(saleInfo);
@@ -415,6 +487,7 @@ public class SalePanel extends JPanel {
 		// *5 05,15,25,35,45,55,65,75,85,95
 		if (Pattern.matches("\\*\\d{1}", number) && Pattern.matches("\\d{1,6}", price)) {
 			saleInfo.setType("3");
+			saleInfo.setPrice(price);
 			for (int i = 0; i < 10; i++) {
 				saleInfo.setLottoNumber(String.valueOf(i) + number);
 				saleDBImplement.addSale(saleInfo);
@@ -424,6 +497,7 @@ public class SalePanel extends JPanel {
 		if ((Pattern.matches("\\*\\d{1}\\*", number) || Pattern.matches("\\d{1}\\*\\*", number))
 				&& Pattern.matches("\\d{1,6}", price)) {
 			saleInfo.setType("3");
+			saleInfo.setPrice(price);
 			for (int i = 0; i < 10; i++) {
 				saleInfo.setLottoNumber(number + String.valueOf(i));
 				saleDBImplement.addSale(saleInfo);
@@ -434,7 +508,7 @@ public class SalePanel extends JPanel {
 			}
 		}
 	}
-	
+
 	private Set<String> seperateTod(String threeLotto) {
 		Set<String> todLotto = new HashSet();
 		String firstNumber = threeLotto.substring(0, 1);
@@ -447,5 +521,36 @@ public class SalePanel extends JPanel {
 		todLotto.add(thirdNumber + firstNumber + secondNumber);
 		todLotto.add(thirdNumber + secondNumber + firstNumber);
 		return todLotto;
+	}
+
+	private String transNumberToWordLotto(String lottoNumber) {
+		String lottoWord = "";
+		switch (lottoNumber) {
+		case "1":
+			lottoWord = "3ตัวเต็ง";
+			break;
+		case "2":
+			lottoWord = "3ตัวโต๊ด";
+			break;
+		case "3":
+			lottoWord = "2ตัวบน";
+			break;
+		case "4":
+			lottoWord = "2ตัวล่าง";
+			break;
+		case "5":
+			lottoWord = "วิ่งบน";
+			break;
+		case "6":
+			lottoWord = "วิ่งล่าง";
+			break;
+		}
+		return lottoWord;
+	}
+
+	private String setTime() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
+		LocalDateTime localDateTime = LocalDateTime.now();
+		return localDateTime.format(formatter);
 	}
 }

@@ -12,7 +12,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,7 +25,7 @@ public class SaleDBImplement {
 	private static final String DB_PASSWORD = "test";
 	private Connection connection;
 	private Statement stmt;
-	private static final String CREATE_TABLE = "CREATE TABLE SaleInfo (id bigint auto_increment NOT NULL PRIMARY KEY,  page VARCHAR(5),  customerName VARCHAR(20),  lottoNumber VARCHAR(50), threeTopPrice VARCHAR(10), threeTodPrice VARCHAR(10), twoTopPrice VARCHAR(10), twoBotPrice VARCHAR(10), runTopPrice VARCHAR(10), runBotPrice VARCHAR(10), date VARCHAR(20))";
+	private static final String CREATE_TABLE = "CREATE TABLE SaleInfo (id bigint auto_increment NOT NULL PRIMARY KEY,  page VARCHAR(2),  customerName VARCHAR(20),  lottoNumber VARCHAR(3), type VARCHAR(1), price VARCHAR(7), date VARCHAR(20))";
 
 	public SaleDBImplement() {
 		this.openConnection();
@@ -43,7 +45,7 @@ public class SaleDBImplement {
 	public void createTable() {
 		try {
 			this.stmt.execute(
-					"CREATE TABLE SaleInfo (id bigint auto_increment NOT NULL PRIMARY KEY,  page VARCHAR(5),  customerName VARCHAR(20),  lottoNumber VARCHAR(50), type VARCHAR(10), price VARCHAR(10), date VARCHAR(20))");
+					"CREATE TABLE SaleInfo (id bigint auto_increment NOT NULL PRIMARY KEY,  page VARCHAR(2),  customerName VARCHAR(20),  lottoNumber VARCHAR(3), type VARCHAR(1), price VARCHAR(7), date VARCHAR(20))");
 			System.out.println("table create success");
 		} catch (SQLException var2) {
 			var2.printStackTrace();
@@ -78,7 +80,6 @@ public class SaleDBImplement {
 		try {
 			String sql = "SELECT * FROM SaleInfo";
 			ResultSet rs = this.stmt.executeQuery(sql);
-
 			while (rs.next()) {
 				SaleInfo saleInfo = new SaleInfo();
 				saleInfo.setPage(rs.getString("page"));
@@ -97,8 +98,32 @@ public class SaleDBImplement {
 		}
 	}
 
-	public List<String> getCustomerPage(String customerName) {
-		ArrayList pageList = new ArrayList();
+	public List<SaleInfo> getSaleListbyPage(String customerName, String page) {
+		ArrayList saleInfoList = new ArrayList();
+
+		try {
+			String sql = "SELECT * FROM SaleInfo where customerName='" + customerName + "' and page='" + page + "'";
+			ResultSet rs = this.stmt.executeQuery(sql);
+			while (rs.next()) {
+				SaleInfo saleInfo = new SaleInfo();
+				saleInfo.setPage(rs.getString("page"));
+				saleInfo.setCustomerName(rs.getString("customerName"));
+				saleInfo.setLottoNumber(rs.getString("lottoNumber"));
+				saleInfo.setType(rs.getString("type"));
+				saleInfo.setPrice(rs.getString("price"));
+				saleInfo.setDate(rs.getString("date"));
+				saleInfoList.add(saleInfo);
+			}
+
+			return saleInfoList;
+		} catch (SQLException var5) {
+			Logger.getLogger(SaleDBImplement.class.getName()).log(Level.SEVERE, (String) null, var5);
+			return saleInfoList;
+		}
+	}
+
+	public Set<String> getCustomerPage(String customerName) {
+		Set pageList = new HashSet();
 
 		try {
 			String sql = "SELECT page FROM SaleInfo where customerName =  '" + customerName + "'";

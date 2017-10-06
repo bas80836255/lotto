@@ -1,5 +1,9 @@
 package baslotto;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Formatter;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -10,14 +14,17 @@ public class Application {
 	public static void main(String[] args) {
 		String number = "212";
 		String price = "+100";
-//		 threeNumber(number, price);
+//		threeNumber(number, price);
 //		twoNumber("50", "+500000");
 //		String test = "23";
-		Set<String> todLotto = seperateTod(number);
-		Iterator<String> iterator = todLotto.iterator();
-		while(iterator.hasNext()) {
-			System.out.println(iterator.next());
-		}
+//		Set<String> todLotto = seperateTod(number);
+//		Iterator<String> iterator = todLotto.iterator();
+//		while(iterator.hasNext()) {
+//			System.out.println(iterator.next());
+//		}
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
+		LocalDateTime localDateTime = LocalDateTime.now();
+		System.out.println(localDateTime.format(formatter));
 	}
 
 	public static void threeNumber(String number, String price) {
