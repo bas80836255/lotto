@@ -19,7 +19,6 @@ import baslotto.database.CustomerDBImplement;
 import baslotto.database.LottoDBImplement;
 import baslotto.database.OwnerDBImplement;
 import baslotto.database.SaleDBImplement;
-import baslotto.view.popup.ErrorPopup;
 
 public class MainPanel extends JPanel {
 	public MainPanel() {
@@ -50,19 +49,5 @@ public class MainPanel extends JPanel {
 		btnNewButton.setBounds(318, 361, 180, 53);
 		this.add(btnNewButton);
 
-		JButton btnNewButton_1 = new JButton("New button");
-		btnNewButton_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				CustomerDBImplement customerDBImplement = new CustomerDBImplement();
-				try{
-					customerDBImplement.isCreateDatabase();
-				} catch (Exception ex) {
-					ErrorPopup errorPopup = new ErrorPopup();
-					errorPopup.setModal(true);
-					errorPopup.setVisible(true);				}
-			}
-		});
-		btnNewButton_1.setBounds(187, 181, 117, 29);
-		add(btnNewButton_1);
 	}
 }

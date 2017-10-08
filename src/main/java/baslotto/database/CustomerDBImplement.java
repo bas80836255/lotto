@@ -44,9 +44,15 @@ public class CustomerDBImplement implements CustomerDB {
 
 	}
 
-	public void isCreateDatabase() throws Exception {
-		String sql = "SELECT * FROM CustomerInfo";
-		stmt.executeQuery(sql);
+	public static boolean isCreateDatabase() throws SQLException, ClassNotFoundException {
+		Class.forName("org.h2.Driver");
+		Connection connectionStatic = DriverManager.getConnection("jdbc:h2:~/LottoDB1", "test", "test");
+		Statement stmtStatic = connectionStatic.createStatement();
+		ResultSet rs = stmtStatic.executeQuery("SELECT * FROM CustomerInfo Limit 1");
+		if (rs.next()) {
+			return true;
+		}
+		return false;
 	}
 
 	public void createTable() {
@@ -75,24 +81,17 @@ public class CustomerDBImplement implements CustomerDB {
 		}
 
 	}
-	
-	public void updateCustomer(CustomerInfo customerInfo,String oldName) {
+
+	public void updateCustomer(CustomerInfo customerInfo, String oldName) {
 		try {
-			String sql = "Update CustomerInfo SET "
-					+ "name='"+ customerInfo.getName() +"',"  
-					+ "threeTopPer='"+ customerInfo.getThreeTopPer() +"',"
-					+ "threeTodPer='"+ customerInfo.getThreeTodPer() +"',"
-					+ "twoTopPer='"+ customerInfo.getTwoTopPer() +"',"
-					+ "twoBotPer='"+ customerInfo.getTwoBotPer() +"',"
-					+ "runTopPer='"+ customerInfo.getRunTopPer() +"',"
-					+ "runBotPer='"+ customerInfo.getRunBotPer() +"',"
-					+ "threeTop='"+ customerInfo.getThreeTop() +"',"
-					+ "threeTod='"+ customerInfo.getThreeTod() +"',"
-					+ "twoTop='"+ customerInfo.getTwoTop() +"',"
-					+ "twoBot='"+ customerInfo.getTwoBot() +"',"
-					+ "runTop='"+ customerInfo.getRunTop() +"',"
-					+ "runBot='"+ customerInfo.getRunBot() +"'"
-					+ "WHERE name='"+oldName+"'";
+			String sql = "Update CustomerInfo SET " + "name='" + customerInfo.getName() + "'," + "threeTopPer='"
+					+ customerInfo.getThreeTopPer() + "'," + "threeTodPer='" + customerInfo.getThreeTodPer() + "',"
+					+ "twoTopPer='" + customerInfo.getTwoTopPer() + "'," + "twoBotPer='" + customerInfo.getTwoBotPer()
+					+ "'," + "runTopPer='" + customerInfo.getRunTopPer() + "'," + "runBotPer='"
+					+ customerInfo.getRunBotPer() + "'," + "threeTop='" + customerInfo.getThreeTop() + "',"
+					+ "threeTod='" + customerInfo.getThreeTod() + "'," + "twoTop='" + customerInfo.getTwoTop() + "',"
+					+ "twoBot='" + customerInfo.getTwoBot() + "'," + "runTop='" + customerInfo.getRunTop() + "',"
+					+ "runBot='" + customerInfo.getRunBot() + "'" + "WHERE name='" + oldName + "'";
 			stmt.execute(sql);
 		} catch (SQLException var3) {
 			Logger.getLogger(CustomerDBImplement.class.getName()).log(Level.SEVERE, (String) null, var3);
@@ -138,7 +137,8 @@ public class CustomerDBImplement implements CustomerDB {
 
 			return customerInfoList;
 		} catch (SQLException var5) {
-			Logger.getLogger(CustomerDBImplement.class.getName()).log(Level.SEVERE, (String) null, var5);
+			// Logger.getLogger(CustomerDBImplement.class.getName()).log(Level.SEVERE,
+			// (String) null, var5);
 			return customerInfoList;
 		}
 	}

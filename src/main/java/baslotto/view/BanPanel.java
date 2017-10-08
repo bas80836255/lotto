@@ -154,6 +154,7 @@ public class BanPanel extends JPanel {
         if (customerNameMap.isEmpty()) {
             this.comboBox.setEnabled(false);
             this.checkBoxCustomerName.setSelected(true);
+            checkBoxCustomerName.setEnabled(false);
         }
 
         String[] petStrings = new String[]{"3ตัวโต๊ด", "3ตัวเต็ง", "2ตัวบน", "2ตัวล่าง", "วิ่งบน", "วิ่งล่าง"};

@@ -5,24 +5,27 @@
 
 package baslotto.view;
 
-import baslotto.database.CustomerDBImplement;
-import baslotto.database.SaleDBImplement;
-import baslotto.entity.CustomerInfo;
-import baslotto.entity.SaleInfo;
-import baslotto.view.popup.NullPopup;
-
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-import java.util.function.BiConsumer;
 import java.util.regex.Pattern;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -35,10 +38,10 @@ import javax.swing.table.DefaultTableModel;
 
 import org.h2.util.StringUtils;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import baslotto.database.CustomerDBImplement;
+import baslotto.database.SaleDBImplement;
+import baslotto.entity.SaleInfo;
+import baslotto.view.popup.NullPopup;
 
 public class SalePanel extends JPanel {
 	private JTable table;
@@ -71,7 +74,12 @@ public class SalePanel extends JPanel {
 		JLabel label_2 = new JLabel("ราคา");
 		label_2.setBounds(378, 39, 109, 61);
 		add(label_2);
-		numberTextField = new JTextField();
+		numberTextField = new JTextField() {
+			public void addNotify() {
+	            super.addNotify();
+	            requestFocus();
+	        }
+		};
 		numberTextField.setBounds(152, 34, 178, 70);
 		add(numberTextField);
 		numberTextField.setColumns(10);
@@ -128,6 +136,7 @@ public class SalePanel extends JPanel {
 							nullPopup.setVisible(true);
 						}
 					}
+					numberTextField.addNotify();
 				}
 			}
 		});
@@ -147,6 +156,19 @@ public class SalePanel extends JPanel {
 		button_2.setBounds(416, 607, 115, 44);
 		add(button_2);
 		JButton button_3 = new JButton("เลือกทั้งหมด");
+		button_3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					InputStream file = getClass().getResourceAsStream("/Scorpions.wav");
+					Clip clip = AudioSystem.getClip();
+					clip.open(AudioSystem.getAudioInputStream(file));
+					clip.start();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
 		button_3.setBounds(544, 607, 115, 44);
 		add(button_3);
 		Map<String, String> customerNameMap = customerDBImplement.getCustomerName();
@@ -207,7 +229,14 @@ public class SalePanel extends JPanel {
 		scrollPane_1.setBounds(990, 158, 258, 437);
 		add(scrollPane_1);
 		
-		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		DefaultTableModel model = new DefaultTableModel() {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				// Only the third column
+				return false;
+			}
+		};
+		table.setModel(model);
 		model.addColumn("ลำดับ");
 		model.addColumn("เลข");
 		model.addColumn("ประเภท");

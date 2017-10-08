@@ -85,6 +85,7 @@ public class OwnerDBImplement implements OwnerDB {
 				ownerInfo.setTwoBot(rs.getString("twoBot"));
 				ownerInfo.setRunTop(rs.getString("runTop"));
 				ownerInfo.setRunBot(rs.getString("runBot"));
+				i++;
 			}
 
 			if(i==0) {
@@ -95,5 +96,16 @@ public class OwnerDBImplement implements OwnerDB {
 			Logger.getLogger(OwnerDBImplement.class.getName()).log(Level.SEVERE, (String) null, var4);
 			return ownerInfo;
 		}
+	}
+	
+	public static boolean isEmpty() throws SQLException, ClassNotFoundException {
+		Class.forName("org.h2.Driver");
+		Connection connectionStatic = DriverManager.getConnection("jdbc:h2:~/LottoDB1", "test", "test");
+		Statement stmtStatic = connectionStatic.createStatement();
+		ResultSet rs = stmtStatic.executeQuery("SELECT * FROM OwnerInfo Limit 1");
+		if (rs.next()) {
+			return false;
+		}
+		return true;
 	}
 }

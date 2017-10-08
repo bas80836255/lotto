@@ -22,13 +22,15 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
 
+import org.h2.util.StringUtils;
+
 import baslotto.database.CustomerDBImplement;
 import baslotto.database.OwnerDBImplement;
 import baslotto.entity.CustomerInfo;
 import baslotto.entity.OwnerInfo;
-import baslotto.view.popup.ErrorPopup;
-import baslotto.view.popup.NullOwnerInfoPopup;
+import baslotto.view.popup.NullPopup;
 import baslotto.view.popup.UpdateCustomerPopup;
+import baslotto.view.popup.WarningPopup;
 
 public class CustomerPanel extends JPanel {
 	private JTable table;
@@ -75,41 +77,44 @@ public class CustomerPanel extends JPanel {
 		JButton btnNewButton = new JButton("เพิ่ม");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CustomerInfo customerInfo = new CustomerInfo();
-				customerInfo.setName(textField.getText());
-				customerInfo.setThreeTopPer(textField_1.getText());
-				customerInfo.setThreeTodPer(textField_2.getText());
-				customerInfo.setTwoTopPer(textField_3.getText());
-				customerInfo.setTwoBotPer(textField_4.getText());
-				customerInfo.setRunTopPer(textField_5.getText());
-				customerInfo.setRunBotPer(textField_6.getText());
-				customerInfo.setThreeTop(textField_1_1.getText());
-				customerInfo.setThreeTod(textField_2_1.getText());
-				customerInfo.setTwoTop(textField_3_1.getText());
-				customerInfo.setTwoBot(textField_4_1.getText());
-				customerInfo.setRunTop(textField_5_1.getText());
-				customerInfo.setRunBot(textField_6_1.getText());
-				customerDB.addCustomer(customerInfo);
-				int i = model.getRowCount();
-				model.addRow(new Object[0]);
-				model.setValueAt(customerDB.getIdCustomer(customerInfo.getName()), i, 0);
-				model.setValueAt(textField.getText(), i, 1);
-				model.setValueAt(textField.getText(), i, 1);
-				model.setValueAt(textField_1.getText(), i, 2);
-				model.setValueAt(textField_2.getText(), i, 3);
-				model.setValueAt(textField_3.getText(), i, 4);
-				model.setValueAt(textField_4.getText(), i, 5);
-				model.setValueAt(textField_5.getText(), i, 6);
-				model.setValueAt(textField_6.getText(), i, 7);
-				model.setValueAt(textField_1_1.getText(), i, 8);
-				model.setValueAt(textField_2_1.getText(), i, 9);
-				model.setValueAt(textField_3_1.getText(), i, 10);
-				model.setValueAt(textField_4_1.getText(), i, 11);
-				model.setValueAt(textField_5_1.getText(), i, 12);
-				model.setValueAt(textField_6_1.getText(), i, 13);
-				ErrorPopup errorPopup = new ErrorPopup();
-				errorPopup.setModal(true);
-				errorPopup.setVisible(true);
+				if (isCustomerTextNotNull()) {
+					CustomerInfo customerInfo = new CustomerInfo();
+					customerInfo.setName(textField.getText());
+					customerInfo.setThreeTopPer(textField_1.getText());
+					customerInfo.setThreeTodPer(textField_2.getText());
+					customerInfo.setTwoTopPer(textField_3.getText());
+					customerInfo.setTwoBotPer(textField_4.getText());
+					customerInfo.setRunTopPer(textField_5.getText());
+					customerInfo.setRunBotPer(textField_6.getText());
+					customerInfo.setThreeTop(textField_1_1.getText());
+					customerInfo.setThreeTod(textField_2_1.getText());
+					customerInfo.setTwoTop(textField_3_1.getText());
+					customerInfo.setTwoBot(textField_4_1.getText());
+					customerInfo.setRunTop(textField_5_1.getText());
+					customerInfo.setRunBot(textField_6_1.getText());
+					customerDB.addCustomer(customerInfo);
+					int i = model.getRowCount();
+					model.addRow(new Object[0]);
+					model.setValueAt(customerDB.getIdCustomer(customerInfo.getName()), i, 0);
+					model.setValueAt(textField.getText(), i, 1);
+					model.setValueAt(textField.getText(), i, 1);
+					model.setValueAt(textField_1.getText(), i, 2);
+					model.setValueAt(textField_2.getText(), i, 3);
+					model.setValueAt(textField_3.getText(), i, 4);
+					model.setValueAt(textField_4.getText(), i, 5);
+					model.setValueAt(textField_5.getText(), i, 6);
+					model.setValueAt(textField_6.getText(), i, 7);
+					model.setValueAt(textField_1_1.getText(), i, 8);
+					model.setValueAt(textField_2_1.getText(), i, 9);
+					model.setValueAt(textField_3_1.getText(), i, 10);
+					model.setValueAt(textField_4_1.getText(), i, 11);
+					model.setValueAt(textField_5_1.getText(), i, 12);
+					model.setValueAt(textField_6_1.getText(), i, 13);
+				} else {
+					NullPopup nullPopup = new NullPopup("ใส่ข้อมูลลูกค้าไม่ครบ");
+					nullPopup.setModal(true);
+					nullPopup.setVisible(true);
+				}
 			}
 		});
 		btnNewButton.setBounds(306, 578, 130, 44);
@@ -190,24 +195,31 @@ public class CustomerPanel extends JPanel {
 		JButton button = new JButton("แก้ไข");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				table.getSelectedRow();
-				CustomerInfo customerInfoUpdate = new CustomerInfo();
-				customerInfoUpdate.setName(model.getValueAt(table.getSelectedRow(), 1).toString());
-				customerInfoUpdate.setThreeTopPer(model.getValueAt(table.getSelectedRow(), 2).toString());
-				customerInfoUpdate.setThreeTodPer(model.getValueAt(table.getSelectedRow(), 3).toString());
-				customerInfoUpdate.setTwoTopPer(model.getValueAt(table.getSelectedRow(), 4).toString());
-				customerInfoUpdate.setTwoBotPer(model.getValueAt(table.getSelectedRow(), 5).toString());
-				customerInfoUpdate.setRunTopPer(model.getValueAt(table.getSelectedRow(), 6).toString());
-				customerInfoUpdate.setRunBotPer(model.getValueAt(table.getSelectedRow(), 7).toString());
-				customerInfoUpdate.setThreeTop(model.getValueAt(table.getSelectedRow(), 8).toString());
-				customerInfoUpdate.setThreeTod(model.getValueAt(table.getSelectedRow(), 9).toString());
-				customerInfoUpdate.setTwoTop(model.getValueAt(table.getSelectedRow(), 10).toString());
-				customerInfoUpdate.setTwoBot(model.getValueAt(table.getSelectedRow(), 11).toString());
-				customerInfoUpdate.setRunTop(model.getValueAt(table.getSelectedRow(), 12).toString());
-				customerInfoUpdate.setRunBot(model.getValueAt(table.getSelectedRow(), 13).toString());
-				UpdateCustomerPopup updateCustomerPopup = new UpdateCustomerPopup(customerInfoUpdate);
-				updateCustomerPopup.setModal(true);
-				updateCustomerPopup.setVisible(true);
+				int selectRow = table.getSelectedRow();
+				if (selectRow >= 0) {
+					CustomerInfo customerInfoUpdate = new CustomerInfo();
+					customerInfoUpdate.setName(model.getValueAt(table.getSelectedRow(), 1).toString());
+					customerInfoUpdate.setThreeTopPer(model.getValueAt(table.getSelectedRow(), 2).toString());
+					customerInfoUpdate.setThreeTodPer(model.getValueAt(table.getSelectedRow(), 3).toString());
+					customerInfoUpdate.setTwoTopPer(model.getValueAt(table.getSelectedRow(), 4).toString());
+					customerInfoUpdate.setTwoBotPer(model.getValueAt(table.getSelectedRow(), 5).toString());
+					customerInfoUpdate.setRunTopPer(model.getValueAt(table.getSelectedRow(), 6).toString());
+					customerInfoUpdate.setRunBotPer(model.getValueAt(table.getSelectedRow(), 7).toString());
+					customerInfoUpdate.setThreeTop(model.getValueAt(table.getSelectedRow(), 8).toString());
+					customerInfoUpdate.setThreeTod(model.getValueAt(table.getSelectedRow(), 9).toString());
+					customerInfoUpdate.setTwoTop(model.getValueAt(table.getSelectedRow(), 10).toString());
+					customerInfoUpdate.setTwoBot(model.getValueAt(table.getSelectedRow(), 11).toString());
+					customerInfoUpdate.setRunTop(model.getValueAt(table.getSelectedRow(), 12).toString());
+					customerInfoUpdate.setRunBot(model.getValueAt(table.getSelectedRow(), 13).toString());
+					UpdateCustomerPopup updateCustomerPopup = new UpdateCustomerPopup(customerInfoUpdate);
+					updateCustomerPopup.setModal(true);
+					updateCustomerPopup.setVisible(true);
+					setDataTable();
+				} else {
+					NullPopup nullPopup = new NullPopup("ยังไม่ได้เลือกลูกค้า");
+					nullPopup.setModal(true);
+					nullPopup.setVisible(true);
+				}
 			}
 		});
 		button.setBounds(448, 578, 130, 44);
@@ -215,10 +227,22 @@ public class CustomerPanel extends JPanel {
 		JButton button_1 = new JButton("ลบ");
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Row = " + table.getSelectedRow());
-				System.out.println("Column = " + table.getSelectedColumn());
-				System.out.println(model.getValueAt(table.getSelectedRow(), table.getSelectedColumn()));
-				customerDB.removeCustomer(model.getValueAt(table.getSelectedRow(), 1).toString());
+				int selectRow = table.getSelectedRow();
+				if (selectRow >= 0) {
+					WarningPopup warningPopup = new WarningPopup("ต้องการลบข้อมูลลูกค้า ?");
+					warningPopup.setModal(true);
+					warningPopup.setVisible(true);
+					if (warningPopup.isPositive()) {
+						customerDB.removeCustomer(model.getValueAt(table.getSelectedRow(), 1).toString());
+						setDataTable();
+					}
+					warningPopup.dispose();
+
+				} else {
+					NullPopup nullPopup = new NullPopup("ยังไม่ได้เลือกลูกค้า");
+					nullPopup.setModal(true);
+					nullPopup.setVisible(true);
+				}
 			}
 		});
 		button_1.setBounds(590, 578, 130, 44);
@@ -255,7 +279,7 @@ public class CustomerPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				OwnerInfo ownerInfo = ownerDBImplement.getOwner();
 				if (ownerInfo == null) {
-					NullOwnerInfoPopup nullOwnerInfoPopup = new NullOwnerInfoPopup();
+					NullPopup nullOwnerInfoPopup = new NullPopup("ยังไม่มีข้อมูลเจ้ามือ");
 					nullOwnerInfoPopup.setModal(true);
 					nullOwnerInfoPopup.setVisible(true);
 					checkBox.setSelected(false);
@@ -321,6 +345,10 @@ public class CustomerPanel extends JPanel {
 		});
 		checkBox.setBounds(16, 503, 128, 23);
 		add(checkBox);
+		setDataTable();
+	}
+
+	public void setDataTable() {
 		model = new DefaultTableModel() {
 			@Override
 			public boolean isCellEditable(int row, int column) {
@@ -329,6 +357,11 @@ public class CustomerPanel extends JPanel {
 			}
 		};
 		table.setModel(model);
+		setColumnTable();
+		setRowTable();
+	}
+
+	public void setColumnTable() {
 		model.addColumn("ลำดับ");
 		model.addColumn("ชื่อลูกค้า");
 		model.addColumn("%3ตัวเต็ง");
@@ -343,12 +376,15 @@ public class CustomerPanel extends JPanel {
 		model.addColumn("2ล่าง");
 		model.addColumn("1วิ่งบน");
 		model.addColumn("1วิ่งล่าง");
+	}
+
+	public void setRowTable() {
 		List<CustomerInfo> customerInfoList = customerDB.getCustomer();
 		int i = 0;
 
 		for (CustomerInfo customerInfo : customerInfoList) {
 			model.addRow(new Object[0]);
-			model.setValueAt(i+1, i, 0);
+			model.setValueAt(i + 1, i, 0);
 			model.setValueAt(customerInfo.getName(), i, 1);
 			model.setValueAt(customerInfo.getThreeTopPer(), i, 2);
 			model.setValueAt(customerInfo.getThreeTodPer(), i, 3);
@@ -364,6 +400,48 @@ public class CustomerPanel extends JPanel {
 			model.setValueAt(customerInfo.getRunBot(), i, 13);
 			i++;
 		}
+	}
 
+	public boolean isCustomerTextNotNull() {
+		if (StringUtils.isNullOrEmpty(textField.getText())) {
+			return false;
+		}
+		if (StringUtils.isNullOrEmpty(textField_1.getText())) {
+			return false;
+		}
+		if (StringUtils.isNullOrEmpty(textField_2.getText())) {
+			return false;
+		}
+		if (StringUtils.isNullOrEmpty(textField_3.getText())) {
+			return false;
+		}
+		if (StringUtils.isNullOrEmpty(textField_4.getText())) {
+			return false;
+		}
+		if (StringUtils.isNullOrEmpty(textField_5.getText())) {
+			return false;
+		}
+		if (StringUtils.isNullOrEmpty(textField_6.getText())) {
+			return false;
+		}
+		if (StringUtils.isNullOrEmpty(textField_1_1.getText())) {
+			return false;
+		}
+		if (StringUtils.isNullOrEmpty(textField_2_1.getText())) {
+			return false;
+		}
+		if (StringUtils.isNullOrEmpty(textField_3_1.getText())) {
+			return false;
+		}
+		if (StringUtils.isNullOrEmpty(textField_4_1.getText())) {
+			return false;
+		}
+		if (StringUtils.isNullOrEmpty(textField_5_1.getText())) {
+			return false;
+		}
+		if (StringUtils.isNullOrEmpty(textField_6_1.getText())) {
+			return false;
+		}
+		return true;
 	}
 }
