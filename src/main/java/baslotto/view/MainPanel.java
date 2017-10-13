@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 
 import baslotto.database.BanDBImplement;
 import baslotto.database.CustomerDBImplement;
+import baslotto.database.CustomerPageDBImplement;
 import baslotto.database.LottoDBImplement;
 import baslotto.database.OwnerDBImplement;
 import baslotto.database.SaleDBImplement;
@@ -37,6 +38,8 @@ public class MainPanel extends JPanel {
 				banDBImplement.createTable();
 				SaleDBImplement saleDBImplement = new SaleDBImplement();
 				saleDBImplement.createTable();
+				CustomerPageDBImplement customerPageDBImplement = new CustomerPageDBImplement();
+				customerPageDBImplement.createTable();
 			}
 		});
 		setLayout(null);

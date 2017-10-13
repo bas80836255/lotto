@@ -11,7 +11,7 @@ import java.util.List;
 public interface BanDB {
     void addBan(BanInfo var1);
 
-    void removeBan(String var1);
+    void removeBan(String lottonumber , String type);
 
     List<BanInfo> getBan();
 }

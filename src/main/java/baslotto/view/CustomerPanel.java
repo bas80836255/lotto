@@ -247,15 +247,6 @@ public class CustomerPanel extends JPanel {
 		});
 		button_1.setBounds(590, 578, 130, 44);
 		add(button_1);
-		JButton button_3 = new JButton("ยกเลิก");
-		button_3.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.out.println(textField_1.getText());
-				textField_1.setText("");
-			}
-		});
-		button_3.setBounds(893, 578, 170, 78);
-		add(button_3);
 		JLabel label_10 = new JLabel("%");
 		label_10.setBounds(165, 317, 9, 16);
 		add(label_10);

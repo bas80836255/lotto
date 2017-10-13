@@ -64,9 +64,10 @@ public class SaleDBImplement {
 		}
 	}
 
-	public void removeSale(String keyword) {
+	public void removeSale(String customerName, String page, String lottoNumber, String type, String price) {
 		try {
-			String sql = "DELETE FROM SaleInfo  where customerid =  '" + keyword + "'";
+			String sql = "DELETE FROM SaleInfo  where customerName =  '" + customerName + "' and page='" + page
+					+ "' and lottoNumber='" + lottoNumber + "' and type ='" + type + "' and price='" + price + "'";
 			this.stmt.execute(sql);
 		} catch (SQLException var3) {
 			Logger.getLogger(SaleDBImplement.class.getName()).log(Level.SEVERE, (String) null, var3);
