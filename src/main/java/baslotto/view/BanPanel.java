@@ -23,7 +23,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-import baslotto.database.BanDB;
 import baslotto.database.BanDBImplement;
 import baslotto.database.CustomerDBImplement;
 import baslotto.entity.BanInfo;
@@ -120,7 +119,8 @@ public class BanPanel extends JPanel {
                     BanInfo oldBaninfo = new BanInfo();
                     oldBaninfo.setName((model.getValueAt(table.getSelectedRow(), 0).toString()));
                     oldBaninfo.setType((model.getValueAt(table.getSelectedRow(), 1).toString()));
-                    oldBaninfo.setLottoNumber((model.getValueAt(table.getSelectedRow(), 2).toString()));
+                    oldBaninfo.setLottoNumber(
+                            (model.getValueAt(table.getSelectedRow(), 2).toString()));
                     oldBaninfo.setPrice((model.getValueAt(table.getSelectedRow(), 3).toString()));
                     oldBaninfo.setBuyable((model.getValueAt(table.getSelectedRow(), 4).toString()));
                     UpdateBanPopup updateBanPopup = new UpdateBanPopup(oldBaninfo);

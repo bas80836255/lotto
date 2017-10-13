@@ -5,7 +5,6 @@
 
 package baslotto.database;
 
-import baslotto.entity.BanInfo;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -15,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import baslotto.entity.BanInfo;
 
 public class BanDBImplement implements BanDB {
     private static final String JDBC_DRIVER = "org.h2.Driver";
@@ -71,7 +72,8 @@ public class BanDBImplement implements BanDB {
                     + "' , price='" + banInfo.getPrice() + "' , buyable='" + banInfo.getBuyable()
                     + "'" + " WHERE name='" + oldBanInfo.getName() + "'and type='"
                     + oldBanInfo.getType() + "' and lottoNumber='" + oldBanInfo.getLottoNumber()
-                    + "' and price='" + oldBanInfo.getPrice() + "' and buyable='" + oldBanInfo.getBuyable()
+                    + "' and price='" + oldBanInfo.getPrice() + "' and buyable='"
+                    + oldBanInfo.getBuyable()
                     + "'";
             this.stmt.execute(sql);
         } catch (SQLException var3) {

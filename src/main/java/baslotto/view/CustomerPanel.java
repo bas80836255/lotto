@@ -198,7 +198,8 @@ public class CustomerPanel extends JPanel {
 				int selectRow = table.getSelectedRow();
 				if (selectRow >= 0) {
 					CustomerInfo customerInfoUpdate = new CustomerInfo();
-					customerInfoUpdate.setName(model.getValueAt(table.getSelectedRow(), 1).toString());
+                    customerInfoUpdate
+                            .setName(model.getValueAt(table.getSelectedRow(), 1).toString());
 					customerInfoUpdate.setThreeTopPer(model.getValueAt(table.getSelectedRow(), 2).toString());
 					customerInfoUpdate.setThreeTodPer(model.getValueAt(table.getSelectedRow(), 3).toString());
 					customerInfoUpdate.setTwoTopPer(model.getValueAt(table.getSelectedRow(), 4).toString());
