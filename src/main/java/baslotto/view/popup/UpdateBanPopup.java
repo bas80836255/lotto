@@ -63,12 +63,10 @@ public class UpdateBanPopup extends JDialog {
 
         textField = new JTextField();
         textField.setEditable(false);
-        textField.setText((String) null);
         textField.setBounds(166, 109, 110, 26);
         contentPanel.add(textField);
 
         textField_1 = new JTextField();
-        textField_1.setText((String) null);
         textField_1.setBounds(166, 142, 110, 26);
         contentPanel.add(textField_1);
 
@@ -78,7 +76,6 @@ public class UpdateBanPopup extends JDialog {
 
         textField_3 = new JTextField();
         textField_3.setEditable(false);
-        textField_3.setText((String) null);
         textField_3.setBounds(170, 46, 95, 26);
         contentPanel.add(textField_3);
         {

@@ -5,7 +5,6 @@
 
 package baslotto.database;
 
-import baslotto.entity.SaleInfo;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -17,6 +16,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import baslotto.entity.SaleInfo;
 
 public class SaleDBImplement {
 	private static final String JDBC_DRIVER = "org.h2.Driver";
@@ -74,6 +75,19 @@ public class SaleDBImplement {
 		}
 
 	}
+	
+	public void UpdateSale(SaleInfo newSaleInfo,SaleInfo oldSaleInfo) {
+        try {
+            String sql = "UPDATE SaleInfo Set customerName =  '" + newSaleInfo.getCustomerName() + "' and page='" + newSaleInfo.getPage()
+                    + "' and lottoNumber='" + newSaleInfo.getLottoNumber() + "' and type ='" + newSaleInfo.getType() + "' and price='" + newSaleInfo.getPrice() + "'"
+                    + "where customerName =  '" + oldSaleInfo.getCustomerName() + "' and page='" + oldSaleInfo.getPage()
+                    + "' and lottoNumber='" + oldSaleInfo.getCustomerName() + "' and type ='" + oldSaleInfo.getType() + "' and price='" + oldSaleInfo.getPrice() + "'";
+            this.stmt.execute(sql);
+        } catch (SQLException var3) {
+            Logger.getLogger(SaleDBImplement.class.getName()).log(Level.SEVERE, (String) null, var3);
+        }
+
+    }
 
 	public List<SaleInfo> getSaleList() {
 		ArrayList saleInfoList = new ArrayList();
